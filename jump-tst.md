@@ -1,0 +1,11 @@
+SUB 0
+
+DEC
+DEC
+
+#t
+
+
+JUMP 4
+PUT
+HALT
