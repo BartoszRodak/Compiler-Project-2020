@@ -47,8 +47,6 @@ JNEG *fin
 JZERO *fin
 JUMP *loop
 #*fin 
-LOAD $RES
-JZERO *secNEG
 LOAD @-1 #probably excesive
 STORE $tmp
 LOAD $A
