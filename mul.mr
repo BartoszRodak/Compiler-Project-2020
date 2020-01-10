@@ -1,6 +1,6 @@
 
 # clear res
-LOAD "0
+LOAD @0
 STORE $res
 
 #test B
@@ -14,7 +14,7 @@ STORE $sB
 LOAD $A
 JNEG *a1
 JUMP *a2
-SUB "0 #*a1
+SUB 0 #*a1
 SUB $A
 STORE $cA #*a2
 
@@ -22,8 +22,8 @@ STORE $cA #*a2
 JZERO *fin
 
 #Get last bit
-SHIFT "-1
-SHIFT "1
+SHIFT @-1
+SHIFT @1
 SUB $cA
 JZERO *sfAB
 LOAD $res
@@ -31,10 +31,10 @@ ADD $sC
 STORE $res
 #*sfAB
 LOAD #sB
-SHIFT "1
+SHIFT @1
 STORE #sB
 LOAD #cA
-SHIFT "-1
+SHIFT @-1
 STORE #cA
 JUMP *tA
 #*fin
