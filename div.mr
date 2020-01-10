@@ -59,7 +59,7 @@ LOAD $tmp
 INC
 STORE $tmp
 LOAD $wA #*cRest
-JZERO *check
+JPOS *check
 LOAD $tmp
 INC
 INC
@@ -77,7 +77,7 @@ SUB 0
 SUB $B
 SUB $wA
 STORE $wA
-LOAD $B #norm B #*secN
+LOAD $B #norm B #*secNeg
 JPOS *+3
 SUB 0
 SUB $wA
