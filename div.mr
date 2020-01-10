@@ -7,6 +7,7 @@ JPOS *+2
 SUB 0
 SUB $B
 STORE $wB #*
+STORE $absB
 LOAD $A #norm A
 JZERO *fin_zero
 JPOS *+2
@@ -46,6 +47,8 @@ JNEG *fin
 JZERO *fin
 JUMP *loop
 #*fin 
+LOAD $RES
+JZERO *secNEG
 LOAD @-1 #probably excesive
 STORE $tmp
 LOAD $A
@@ -58,23 +61,17 @@ JPOS *cRest
 LOAD $tmp
 INC
 STORE $tmp
-LOAD $wA #*cRest
-JPOS *check
-LOAD $tmp
-INC
-INC
-STORE $tmp
-LOAD $tmp #*check
-JZERO *true 
+JZERO *cont #*cRest
 JUMP *secNeg 
-SUB 0 #*true
+SUB 0 #*cont
 SUB $RES
+STORE $RES
+LOAD $wA
+JZERO *secNeg
+LOAD $RES
 DEC
 STORE $RES
-LOAD $B #norm B 
-JPOS *+2
-SUB 0
-SUB $B
+LOAD $absB
 SUB $wA
 STORE $wA
 LOAD $B #norm B #*secNeg
