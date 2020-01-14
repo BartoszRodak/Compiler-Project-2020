@@ -1,0 +1,8 @@
+DECLARE
+a, b, c(5:10)
+BEGIN
+READ a;
+READ b;
+c(5) ASSIGN a PLUS b; 
+WRITE c(5);
+END

@@ -27,15 +27,15 @@ SHIFT @1
 SUB $cA
 JZERO *sfAB
 LOAD $res
-ADD $sC
+ADD $sB
 STORE $res
 #*sfAB
-LOAD #sB
+LOAD $sB
 SHIFT @1
-STORE #sB
-LOAD #cA
+STORE $sB
+LOAD $cA
 SHIFT @-1
-STORE #cA
+STORE $cA
 JUMP *tA
 #*fin
 #CUSTOM

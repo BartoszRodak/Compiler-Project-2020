@@ -1,0 +1,19 @@
+LOAD $wA #*cRest
+JPOS *check
+LOAD $tmp
+INC
+INC
+STORE $tmp
+LOAD $tmp #*check
+JZERO *true 
+JUMP *secNeg 
+SUB 0 #*true
+SUB $RES
+DEC
+STORE $RES
+LOAD $B #norm B 
+JPOS *+2
+SUB 0
+SUB $B
+SUB $wA
+STORE $wA

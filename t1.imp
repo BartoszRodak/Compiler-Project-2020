@@ -1,0 +1,3 @@
+DECLARE a, b, c 
+BEGIN WRITE 5; READ a; WRITE a; c ASSIGN a PLUS b; WRITE c; 
+END  
