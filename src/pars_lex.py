@@ -120,17 +120,19 @@ class CompilerParser(Parser):
     def command(self, p) -> WhileLoopBlock:
         return WhileLoopBlock(p.commands, p.condition, True)
 
-    @_('FOR IDENTIFIER FROM value TO value DO commands ENDFOR')
+    @_('FOR iterator FROM value TO value DO commands ENDFOR')
     def command(self, p) -> ForLoopBlock:
-        self.memory.declareIterator(p.IDENTIFIER)
-        loop = ForLoopBlock(p.commands, p.IDENTIFIER, p.value0, p.value1)
-        return loop ##TODO
+        p.iterator.setRange(p.value0, p.value1)
+        loop = ForLoopBlock(p.commands, p.iterator)
+        self.memory.remove(p.iterator)
+        return loop
 
-    @_('FOR IDENTIFIER FROM value DOWNTO value DO commands ENDFOR')
+    @_('FOR iterator FROM value DOWNTO value DO commands ENDFOR')
     def command(self, p) -> ForLoopBlock:
-        self.memory.declareIterator(p.IDENTIFIER)
-        loop = ForLoopBlock(p.commands, p.IDENTIFIER, p.value0, p.value1, True)
-        return loop ##TODO
+        p.iterator.setRange(p.value0, p.value1, True)
+        loop = ForLoopBlock(p.commands, p.iterator)
+        self.memory.remove(p.iterator)
+        return loop
 
     @_('READ identifier ";"')
     def command(self, p) -> IOAction:
@@ -168,6 +170,10 @@ class CompilerParser(Parser):
     @_('identifier')
     def value(self, p) -> Value:
         return p.identifier
+
+    @_('IDENTIFIER')
+    def iterator(self, p):
+        return self.memory.getIterator(p.IDENTIFIER)
 
     @_('IDENTIFIER')
     def identifier(self, p):

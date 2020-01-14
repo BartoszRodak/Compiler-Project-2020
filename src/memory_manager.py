@@ -25,6 +25,9 @@ class Value:
         self.index = index
         self.parent = parent
 
+    def setRange(self, lowerBound:'Value', upperBound: 'Value', isDescending: bool = False):
+        self.range = (lowerBound, upperBound, isDescending)
+
     def getValue(self, pos: int):
         if self._type != ValueType.ARRAY_ACCESS:
             return f"""LOAD {self.location}
@@ -84,17 +87,36 @@ class MemoryManager:
         # self.constants[name] = self.undeclared[name]
         # del self.undeclared[name]
         # else:
+        if name in self.variables:
+            raise AssertionError(f"Variable '{name}' already defined")
         self.variables[name] = Value(ValueType.VARIABLE)
 
     def declareArray(self, name: str, firstPos: Value, lastPos: Value):
         # if firstPos.value > lastPos.value:
-        #     throw ValueError()
+        #     throw ValueError() #TODO
+        if name in self.arrays:
+            raise AssertionError(f"Array '{name}' already defined")
         self.arrays[name] = Value(
             ValueType.ARRAY, index=(int(firstPos), int(lastPos)))
 
-    def declareIterator(self, name:str): #TODO Iterator
+    def getIterator(self, name:str): #TODO Iterator
         self.declareVariable(name)
-    
+        it = self.getVariable(name)
+        it.iter = True
+        return it
+
+    def remove(self, val: Value):
+        if val.iter:
+            key: str
+            for k, v in self.variables.items():
+                if v == val:
+                    key = k
+                    break
+            self.iterators.append(self.variables[key])
+            del self.variables[key]
+        else: 
+            raise NotImplementedError()
+
     def getConstant(self, x: int) -> Value:
         x = int(x)
         if x in self.constants:
@@ -177,6 +199,11 @@ STORE {self.freeIndex+2}
             value.location = self.freeIndex
             self.freeIndex += 1
 
+        # iters
+        for value in self.iterators:
+            value.location = self.freeIndex
+            self.freeIndex += 2
+
         # arrays
         for value in self.arrays.values():
             size = value.index[1] - value.index[0] + 1
@@ -185,7 +212,7 @@ STORE {self.freeIndex+2}
             result += self.generateConstant(imaginaryZero, regOne)
             result += f"STORE {self.freeIndex}"
             result += "\n"
-            self.freeIndex += 1
+            self.freeIndex += size + 1 
         return result
 
 # TODO Better error messages

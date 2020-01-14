@@ -84,10 +84,10 @@ class BoolExpression:
         self.paramB = paramB
 
     def getValue(self, position: int):
-        result = self.paramB.getValue(position) + "STORE 1\n"
+        result = self.paramB.getValue(position) + "STORE 3\n"
         shift = len(result.splitlines())
         result += self.paramA.getValue(position+shift)
-        result += "SUB 1\n"
+        result += "SUB 3\n"
         shift = len(result.splitlines())
 
         pos = 10  # TODO normalize basic values, move from userspace
@@ -199,26 +199,56 @@ JUMP {position+len(result.splitlines())+3+thenLen}
 
 class ForLoopBlock(LoopBlock):
     identifier: Value
-    lowerBound: Value
-    upperBound: Value
-    isDescending: bool
+    # lowerBound: Value
+    # upperBound: Value
+    # isDescending: bool
 
-    def __init__(self, commands: List[TreeNode], identifier: Value, lowerBound: Value, upperBound: Value, reverseDirection: bool = False):
+    # def __init__(self, commands: List[TreeNode], identifier: Value, lowerBound: Value, upperBound: Value, reverseDirection: bool = False):
+    def __init__(self, commands: List[TreeNode], iterator: Value):
         self.commands = commands
-        self.identifier = identifier
-        self.lowerBound = lowerBound
-        self.upperBound = upperBound
-        self.isDescending = reverseDirection
+        self.identifier = iterator
+        # self.lowerBound = lowerBound
+        # self.upperBound = upperBound
+        # self.isDescending = reverseDirection
 
     def print(self, position: int):
-        result = ""
+        #prep //prepLen lines
+        prep = self.identifier.range[0].getValue(position) + f"""STORE {self.identifier.getPosition()}
+"""
+        # prep = self.identifier.range[0].getValue() + self.identifier.store() #TODO TEST it
+    
+        prep += self.identifier.range[1].getValue(position+len(prep.splitlines())) + f"""STORE {self.identifier.getPosition() + 1}
+"""
+        prepLen = len(prep.splitlines())
+        #validate // 3 lines
 
-        if self.isDescending:
-            pass
+        #execute
+        code = TreeNode.printBlock(self.commands, position + prepLen + 3)
+        codeLen = len(code.splitlines())
+
+        #iterate and loop //4 lines
+        iterate = f"""LOAD {self.identifier.getPosition()}
+"""
+        if self.identifier.range[2]:
+            iterate += "DEC\n"
         else:
-            pass
+            iterate += "INC\n"
+        iterate += self.identifier.store()
+        iterate += f"""JUMP {position+prepLen}
+"""
+        #validate gen
+        validate = f"""LOAD {self.identifier.getPosition() + 1}
+SUB {self.identifier.getPosition()}
+"""
 
-        return result
+        if self.identifier.range[2]:
+            validate += f"""JPOS {position+prepLen+3+codeLen+4}
+"""
+        else:
+            validate += f"""JNEG {position+prepLen+3+codeLen+4}
+"""
+
+        return prep + validate + code + iterate
 
 
 
