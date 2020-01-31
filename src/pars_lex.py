@@ -65,7 +65,6 @@ class CompilerLexer(Lexer):
 class CompilerParser(Parser):
     tokens = CompilerLexer.tokens
     memory = MemoryManager()
-    # debugfile = 'parser.out'
 
     @_('DECLARE declarations BEGIN commands END')
     def program(self, p) -> Tuple[ProgramAST, MemoryManager]:
