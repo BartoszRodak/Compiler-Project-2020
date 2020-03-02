@@ -9,7 +9,7 @@ if __name__ == '__main__':
     argParser.add_argument("-i", "--input")
     argParser.add_argument("-o", "--output")
     params = vars(argParser.parse_args())
-    print(params)
+    # print(params)
     inFile = sys.stdin
     outFile = sys.stdout
     try:
@@ -28,7 +28,13 @@ if __name__ == '__main__':
     lexer = CompilerLexer()
     parser = CompilerParser()
     tokens = lexer.tokenize(inFile.read())
-    (tree, memory) = parser.parse(tokens)
+    try:
+        (tree, memory) = parser.parse(tokens)
+    except TypeError:
+        exit(1)
+    except Exception as error:
+        print(error)
+        exit(1)
 
     bm = BlockManager(tree)
     printer = Printer(bm, memory)

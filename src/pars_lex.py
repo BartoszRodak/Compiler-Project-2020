@@ -54,12 +54,11 @@ class CompilerLexer(Lexer):
     END = r'END'
 
     @_(r'\n+')
-    def newline(self, t):
-        self.lineno += t.value.count('\n')
+    def newline(self, token):
+        self.lineno += token.value.count('\n')
 
-    def error(self, t):
-        print(f'Illegal token {t.value[0]} in line {t.lineno}')
-        self.index += 1
+    def error(self, token):
+        raise AssertionError(f"Line {token.lineno}: Syntax error. Symbol '{token.value}'")
 
 
 class CompilerParser(Parser):
@@ -186,9 +185,5 @@ class CompilerParser(Parser):
     def identifier(self, p):
         return self.memory.getArray(p.IDENTIFIER, self.memory.getConstant(int(p.NUMBER)))
 
-# if __name__ == "__main__":
-#     lex = CompilerLexer()
-#     pars = CompilerParser()
-#     data = "BEGIN\nA\nEND"
-
-#     pars.parse(lex.tokenize(data))
+    def error(self, token):
+        raise AssertionError(f"Line {token.lineno}: Syntax error. Token '{token.value}'")

@@ -164,3 +164,9 @@ dmypy.json
 # VSCode
 .vscode
 *.code-workspace
+
+# PyCharm
+.idea
+
+# pyCache
+src/__pycache__/*

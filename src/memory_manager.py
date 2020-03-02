@@ -96,6 +96,8 @@ class MemoryManager:
         #     throw ValueError() #TODO
         if name in self.arrays:
             raise AssertionError(f"Array '{name}' already defined")
+        if int(firstPos) > int(lastPos):
+            raise ValueError(f"Invalid range for array '{name}'")
         self.arrays[name] = Value(
             ValueType.ARRAY, index=(int(firstPos), int(lastPos)))
 
@@ -131,6 +133,8 @@ class MemoryManager:
 
     def getVariable(self, name: str):
         # if name in self.variables:
+        if name not in self.variables:
+            raise AssertionError(f"Variable '{name}' not declared")
         return self.variables[name]
         # elif name in self.undeclared:
         # return self.undeclared[name]
@@ -139,6 +143,8 @@ class MemoryManager:
         # return self.undeclared[x]
 
     def getArray(self, name: str, index: Value):
+        if name not in self.arrays:
+            raise AssertionError(f"Array '{name}' not declared")
         return Value(ValueType.ARRAY_ACCESS, index=index, parent=self.arrays[name])
 
     def generateConstant(self, var: int, regOne: int) -> str:
@@ -214,5 +220,4 @@ STORE {self.freeIndex+2}
             result += "\n"
             self.freeIndex += size + 1 
         return result
-
-# TODO Better error messages
+        
